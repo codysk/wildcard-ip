@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var Command = &cobra.Command {
-	Use: "wildcard-ip",
+var Command = &cobra.Command{
+	Use:   "wildcard-ip",
 	Short: "a simple wildcard dns",
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -64,7 +64,7 @@ func init() {
 		"tcp",
 		"t",
 		false,
-		"enable tcp nameserver " +
+		"enable tcp nameserver "+
 			"(If neither tcp server nor udp server is enabled, both of them will be enabled)",
 	)
 	Command.Flags().BoolVarP(
@@ -72,8 +72,7 @@ func init() {
 		"udp",
 		"u",
 		false,
-		"enable udp nameserver " +
+		"enable udp nameserver "+
 			"(If neither tcp server nor udp server is enabled, both of them will be enabled)",
 	)
 }
-

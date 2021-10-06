@@ -10,11 +10,12 @@ import (
 type IPNotFoundErr struct {
 	error
 }
+
 func findIPv4InDomain(domain string) (net.IP, error) {
 
 	domainFrags := strings.Split(domain, ".")
 	reverseAny(domainFrags)
-	
+
 	// ip by dash notation
 	dashNotationIpFound := true
 	dashNotationIp, dashNotationIpIndex, err := findIPv4ByDashNotation(domainFrags)
@@ -41,13 +42,13 @@ func findIPv4InDomain(domain string) (net.IP, error) {
 		retIp = dotNotationIp
 		err = nil
 	}
-	
+
 	return retIp, err
 }
 
 func findIPv4ByStringSlice(domainFrags []string) (net.IP, int, error) {
-	for cursor := 0; cursor <= len(domainFrags) - 4; cursor++ {
-		ip, err := getIPv4ByStringSlice(domainFrags[cursor: cursor + 4])
+	for cursor := 0; cursor <= len(domainFrags)-4; cursor++ {
+		ip, err := getIPv4ByStringSlice(domainFrags[cursor : cursor+4])
 		if err == nil {
 			return ip, cursor, err
 		}

@@ -16,26 +16,26 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 	replayMsg := &dns.Msg{}
 	replayMsg.SetReply(r)
-	for _, question := range r.Question{
+	for _, question := range r.Question {
 		ip, err := findIPv4InDomain(question.Name)
 		if err != nil {
 			continue
 		}
 		dnsRR := &dns.A{
 			Hdr: dns.RR_Header{
-				Name: question.Name,
+				Name:   question.Name,
 				Rrtype: dns.TypeA,
-				Class: dns.ClassINET,
-				Ttl: 300,
+				Class:  dns.ClassINET,
+				Ttl:    300,
 			},
 			A: ip,
 		}
 		dnsTXT := &dns.TXT{
 			Hdr: dns.RR_Header{
-				Name: question.Name,
+				Name:   question.Name,
 				Rrtype: dns.TypeTXT,
-				Class: dns.ClassINET,
-				Ttl: 300,
+				Class:  dns.ClassINET,
+				Ttl:    300,
 			},
 			Txt: []string{question.Name + " wildcard dns provide by github.com/codysk/wildcard-ip"},
 		}
@@ -56,8 +56,8 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 func NewServer(protocol string, address string) *Server {
 	server := &Server{
 		dns.Server{
-			Addr: address,
-			Net: protocol,
+			Addr:       address,
+			Net:        protocol,
 			TsigSecret: nil,
 		},
 	}

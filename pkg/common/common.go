@@ -16,6 +16,7 @@ type udpServerConfig struct {
 }
 
 var _config config
+
 func Config() *config {
 	return &_config
 }
