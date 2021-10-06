@@ -15,30 +15,30 @@ func findIPv4InDomain(domain string) (net.IP, error) {
 	domainFrags := strings.Split(domain, ".")
 	reverseAny(domainFrags)
 	
-	// ip by bar split
-	barSplitIpFound := true
-	barSplitIp, barSplitIpIndex, err := findIPv4ByBarSplit(domainFrags)
+	// ip by dash notation
+	dashNotationIpFound := true
+	dashNotationIp, dashNotationIpIndex, err := findIPv4ByDashNotation(domainFrags)
 	if err != nil {
-		barSplitIpFound = false
+		dashNotationIpFound = false
 	}
-	// ip by point split
-	pointSplitIpFound := true
-	pointSplitIp, pointSplitIpIndex, err := findIPv4ByStringSlice(domainFrags)
+	// ip by dot notation
+	dotNotationIpFound := true
+	dotNotationIp, dotNotationIpIndex, err := findIPv4ByStringSlice(domainFrags)
 	if err != nil {
-		pointSplitIpFound = false
+		dotNotationIpFound = false
 	}
 
 	err = IPNotFoundErr{}
 	retIp := net.IP{}
 	index := math.MaxInt
-	if barSplitIpFound && barSplitIpIndex < index {
-		index = barSplitIpIndex
-		retIp = barSplitIp
+	if dashNotationIpFound && dashNotationIpIndex < index {
+		index = dashNotationIpIndex
+		retIp = dashNotationIp
 		err = nil
 	}
-	if pointSplitIpFound && pointSplitIpIndex < index {
-		index = barSplitIpIndex
-		retIp = pointSplitIp
+	if dotNotationIpFound && dotNotationIpIndex < index {
+		index = dotNotationIpIndex
+		retIp = dotNotationIp
 		err = nil
 	}
 	
@@ -67,9 +67,9 @@ func getIPv4ByStringSlice(slice []string) (net.IP, error) {
 	return nil, IPNotFoundErr{}
 }
 
-func findIPv4ByBarSplit(domainFrags []string) (net.IP, int, error) {
+func findIPv4ByDashNotation(domainFrags []string) (net.IP, int, error) {
 	for index, frag := range domainFrags {
-		ip, err := getIPv4ByBarSplit(frag)
+		ip, err := getIPv4ByDashNotation(frag)
 		if err == nil {
 			return ip, index, err
 		}
@@ -77,7 +77,7 @@ func findIPv4ByBarSplit(domainFrags []string) (net.IP, int, error) {
 	return nil, 0, IPNotFoundErr{}
 }
 
-func getIPv4ByBarSplit(subDomain string) (net.IP, error) {
+func getIPv4ByDashNotation(subDomain string) (net.IP, error) {
 	ipStr := strings.ReplaceAll(subDomain, "-", ".")
 	if ip := net.ParseIP(ipStr).To4(); ip != nil {
 		return ip, nil
