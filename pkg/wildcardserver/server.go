@@ -2,6 +2,7 @@ package wildcardserver
 
 import (
 	"github.com/miekg/dns"
+	log "github.com/sirupsen/logrus"
 )
 
 type Server struct {
@@ -17,10 +18,13 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 	replayMsg := &dns.Msg{}
 	replayMsg.SetReply(r)
 	for _, question := range r.Question {
+		log.Infof("accept request for <%s>", question.Name)
 		ip, err := findIPv4InDomain(question.Name)
 		if err != nil {
+			log.Infof("<%s> parse failed", question.Name)
 			continue
 		}
+
 		dnsRR := &dns.A{
 			Hdr: dns.RR_Header{
 				Name:   question.Name,
@@ -42,8 +46,10 @@ func (s *Server) ServeDNS(w dns.ResponseWriter, r *dns.Msg) {
 
 		switch question.Qtype {
 		case dns.TypeTXT:
+			log.Infof("TXT: <%s> -> %s", question.Name, dnsTXT.String())
 			replayMsg.Answer = append(replayMsg.Answer, dnsTXT)
 		case dns.TypeA, dns.TypeAAAA:
+			log.Infof("Resolved: <%s> -> %s", question.Name, ip.String())
 			replayMsg.Answer = append(replayMsg.Answer, dnsRR)
 			replayMsg.Extra = append(replayMsg.Extra, dnsTXT)
 		default:
